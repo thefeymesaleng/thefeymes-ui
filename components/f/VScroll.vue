@@ -36,7 +36,7 @@
           transform: `translateY(${thumbPosition}px)`,
           transition: isScrolling ? `${scrollingTransition}ms` : '0ms',
         }"
-        @mousedown.capture="thumbScroll"
+        @pointerdown.capture="thumbScroll"
       ></div>
     </div>
   </div>
@@ -49,6 +49,7 @@ import {
   useElementBounding,
   useMouseInElement,
 } from "@vueuse/core";
+import Impetus from "./Impetus";
 
 const props = defineProps({
   list: {
@@ -64,6 +65,13 @@ const props = defineProps({
   },
 });
 const container = ref();
+// new Impetus({
+//   source: container.value,
+//   update: function (x, y) {
+//     // whatever you want to do with the values
+//     console.log("run",'asda');
+//   },
+// });
 const {
   width: containerW,
   height: containerH,

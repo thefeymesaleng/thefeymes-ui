@@ -5,15 +5,51 @@
       v-slot="{ item, index, topIndex }"
       style="height: 450px; width: 100px"
     >
-      <!-- <q-btn color="primary" icon="check" :label="index" v-for="n in 1" style="width: 150px;"/> -->
       <div class="flex" style="width: 150px">{{ item.name }} {{ index }}</div>
     </f-v-scroll>
+
+    <div v-bind="containerProps" style="height: 450px; width: 500px">
+      <div v-bind="wrapperProps">
+        <div
+          v-for="{ index, data } in list"
+          :key="index"
+          style="box-shadow: 0 0 0 1px inset black"
+          :style="{
+            height: `${32}px`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }"
+        >
+          Row {{ index }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { useVirtualList } from "@vueuse/core";
 const arr = Array.from(Array(100559).keys(), (x) => {
   return { name: x + 1 };
+});
+const arr2 = ref(
+  Array.from(Array(100559).keys(), (x) => {
+    return { name: x + 1 };
+  })
+);
+const search = ref("");
+const allItems = Array.from(Array(99999).keys()).map((i) => ({
+  height: i % 2 === 0 ? 42 : 84,
+  size: i % 2 === 0 ? "small" : "large",
+}));
+
+const filteredItems = computed(() => {
+  return allItems.filter((i) => i.size.startsWith(search.value.toLowerCase()));
+});
+const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(arr2, {
+  itemHeight: 32,
+  overscan: 40,
 });
 </script>
 
