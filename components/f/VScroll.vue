@@ -3,6 +3,7 @@
     ref="container"
     class="overflow-hidden relative-position"
     @wheel="scroll"
+    :draggable="false"
   >
     <div
       ref="scroller"
