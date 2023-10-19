@@ -50,7 +50,6 @@ import {
   useElementBounding,
   useMouseInElement,
 } from "@vueuse/core";
-import Impetus from "./Impetus";
 
 const props = defineProps({
   list: {
