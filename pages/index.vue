@@ -14,9 +14,7 @@
       v-slot="{ item, index, topIndex }"
       style="height: 450px; width: 100px"
     >
-      <div class="flex" style="width: 150px">
-        t {{ index }}
-      </div>
+      <div class="flex" style="width: 150px">t {{ index }}</div>
     </f-v-scroll-native>
 
     <div v-bind="containerProps" style="height: 450px; width: 500px">
@@ -36,11 +34,15 @@
         </div>
       </div>
     </div>
+    <!-- <test/> -->
   </div>
 </template>
 
 <script setup>
+// import test from "./test";
 import { useVirtualList } from "@vueuse/core";
+
+// console.log(test)
 const arr = Array.from(Array(100559).keys(), (x) => {
   return { name: x + 1 };
 });

@@ -41,6 +41,8 @@
 </template>
 
 <script setup>
+import * as test from "https://unpkg.com/thefeymes-ui@0.0.1-test-9/composables/useVScrollJs.js";
+console.log(test)
 const props = defineProps({
   list: {
     default() {
