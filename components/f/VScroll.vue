@@ -22,7 +22,7 @@
         }"
         style="box-shadow: 0 0 0 1px inset black"
       >
-        <slot :item="item" :index="item['_stat'].index" />
+        <slot :item="item" :index="item._stat.index" />
       </div>
     </div>
     <div class="scrollbar" @click.self="scrollTo">
@@ -41,12 +41,6 @@
 </template>
 
 <script setup>
-// import {
-//   useMousePressed,
-//   useMouseInElement,
-//   useElementBounding,
-// } from "@vueuse/core";
-
 const props = defineProps({
   list: {
     default() {
@@ -146,24 +140,6 @@ watch(pressed, () => {
     initialMousePos.value = null;
   }
 });
-
-// const itemInView = computed(() => {
-//   return Math.ceil(containerH.value / props.itemSize);
-// });
-
-// const renderedList = ref([]);
-// watch(
-//   position,
-//   async () => {
-//     await nextTick();
-//     renderedList.value = useGetRenderedList(
-//       { ...props, itemInView },
-//       scrollerSize,
-//       position
-//     );
-//   },
-//   { immediate: true }
-// );
 </script>
 
 <style scoped>
