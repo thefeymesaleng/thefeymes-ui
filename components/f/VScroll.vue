@@ -11,7 +11,6 @@
         transition: isScrolling ? `${scrollingTransition}ms` : '0ms',
         transform: `translateY(-${position}px)`,
         userSelect: thumbScrolling ? 'none' : 'auto',
-        height: `${props.itemSize * props.list.length}px`,
       }"
     >
       <div
