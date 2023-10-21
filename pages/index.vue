@@ -5,8 +5,19 @@
       v-slot="{ item, index, topIndex }"
       style="height: 450px; width: 100px"
     >
-      <div class="flex" style="width: 150px"> test {{ item.name }} {{ index }}</div>
+      <div class="flex" style="width: 150px">
+        test {{ item.name }} {{ index }}
+      </div>
     </f-v-scroll>
+    <f-v-scroll-native
+      :list="arr"
+      v-slot="{ item, index, topIndex }"
+      style="height: 450px; width: 100px"
+    >
+      <div class="flex" style="width: 150px">
+        t {{ index }}
+      </div>
+    </f-v-scroll-native>
 
     <div v-bind="containerProps" style="height: 450px; width: 500px">
       <div v-bind="wrapperProps">

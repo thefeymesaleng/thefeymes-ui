@@ -23,12 +23,37 @@ export const useVScroll = (
   });
   const { x, y, isScrolling, arrivedState, directions } = useScroll(el);
 
+  // onMounted(() => {
   position = position ?? y;
+  // });
+  // let positionRef = ref();
+  // if (position) positionRef = position;
 
   const renderedList: Ref = ref([]);
+
+  // const positionRef = computed({
+  //   get() {
+  //     return y.value;
+  //   },
+  //   set(val) {
+  //     y.value = Number.parseFloat(val);
+  //   },
+  // });
+  // watch(
+  //   y,
+  //   () => {
+  //     console.log(y.value, positionRef);
+  //     if (!position) {
+  //       positionRef.value = y.value;
+  //       console.log(y.value, positionRef.value);
+  //     }
+  //   },
+  //   { immediate: true }
+  // );
   watch(
     position,
     async () => {
+      console.log("run");
       await nextTick();
       if (!position) return;
       renderedList.value = useGetRenderedList(props, scrollerSize, position);
