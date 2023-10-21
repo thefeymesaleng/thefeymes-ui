@@ -13,9 +13,6 @@
         userSelect: thumbScrolling ? 'none' : 'auto',
       }"
     >
-      <!-- <div style="right: 50px; position: absolute">
-        {{ renderedList.length }}
-      </div> -->
       <div
         v-for="(item, i) in renderedList"
         class="absolute full-width"
@@ -44,12 +41,11 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, watch } from "vue";
-import {
-  useMousePressed,
-  useElementBounding,
-  useMouseInElement,
-} from "@vueuse/core";
+// import {
+//   useMousePressed,
+//   useMouseInElement,
+//   useElementBounding,
+// } from "@vueuse/core";
 
 const props = defineProps({
   list: {
@@ -64,28 +60,20 @@ const props = defineProps({
     default: 20,
   },
 });
+
 const container = ref();
-// new Impetus({
-//   source: container.value,
-//   update: function (x, y) {
-//     // whatever you want to do with the values
-//     console.log("run",'asda');
-//   },
-// });
-const {
-  width: containerW,
-  height: containerH,
-  top: containerTop,
-} = useElementBounding(container);
+const position = ref(0);
+const renderedList = useVScroll(container, props.list, { ...props, position });
+const { height: containerH } = useElementBounding(container);
+const { elementY } = useMouseInElement(container);
 const scroller = ref();
-const scollerSize = computed(() => {
+const scrollerSize = computed(() => {
   return props.itemSize * props.list.length;
 });
 const scollerEnd = computed(() => {
-  return scollerSize.value - containerH.value;
+  return scrollerSize.value - containerH.value;
 });
 
-const position = ref(0);
 const isScrolling = ref(false);
 const scrollingTransition = ref(170);
 const scroll = (v) => {
@@ -105,7 +93,7 @@ watch(position, () => {
 });
 
 const thumbRatio = computed(() => {
-  return containerH.value / scollerSize.value;
+  return containerH.value / scrollerSize.value;
 });
 const thumbSize = computed(() => {
   let size = containerH.value * thumbRatio.value;
@@ -125,7 +113,6 @@ watch(position, () => {
 });
 
 const { pressed } = useMousePressed();
-const { y, elementY } = useMouseInElement(container);
 const thumbScrolling = ref(false);
 const initialMousePos = ref(null);
 const thumbInitialPos = ref(null);
@@ -140,12 +127,9 @@ const scrollTo = () => {
   position.value = scollerEnd.value * (elementY.value / total);
 };
 
-watch(y, () => {
+watch(elementY, () => {
   if (thumbScrolling.value && initialMousePos.value) {
-    if (
-      y.value >= containerTop.value &&
-      y.value <= containerTop.value + containerH.value
-    ) {
+    if (elementY.value >= 0 && elementY.value <= containerH.value) {
       const total = containerH.value - thumbSize.value;
       const gap = initialMousePos.value - thumbInitialPos.value;
       position.value = scollerEnd.value * ((elementY.value - gap) / total);
@@ -163,95 +147,23 @@ watch(pressed, () => {
   }
 });
 
-const itemInView = computed(() => {
-  return Math.ceil(containerH.value / props.itemSize);
-});
-const renderedList = ref([]);
-const getRenderedList = () => {
-  renderedList.value = [];
-  if (props.list.length <= itemInView.value + props.overscan * 2) {
-    for (let index = 0; index < props.list.length; index++) {
-      let el = index;
-      const element = props.list[el];
-      element["_stat"] = {
-        position: el * props.itemSize,
-      };
-      renderedList.value.push(element);
-    }
-    return;
-  }
-  let index = Math.floor(
-    props.list.length - (scollerSize.value - position.value) / props.itemSize
-  );
-  const before = index - props.overscan;
-  const after = props.list.length - (index + itemInView.value) - props.overscan;
-  const renderBefore =
-    before < 0
-      ? props.overscan - Math.abs(before)
-      : after < 0
-      ? props.overscan +
-        (Math.abs(after % props.overscan) == 0
-          ? props.overscan
-          : Math.abs(after % props.overscan))
-      : props.overscan;
+// const itemInView = computed(() => {
+//   return Math.ceil(containerH.value / props.itemSize);
+// });
 
-  const renderAfter =
-    after < 0
-      ? props.overscan - Math.abs(after)
-      : before < 0
-      ? props.overscan +
-        (Math.abs(before % props.overscan) == 0
-          ? props.overscan
-          : Math.abs(before % props.overscan))
-      : props.overscan;
-
-  for (let i = 0; i < renderBefore; i++) {
-    let elementIndex = index - (i + 1);
-    const element = props.list[elementIndex];
-
-    element["_stat"] = {
-      position: elementIndex * props.itemSize,
-      index: elementIndex,
-    };
-    renderedList.value.push(element);
-  }
-  for (let i = 0; i < itemInView.value; i++) {
-    let elementIndex = index + i;
-    const element = props.list[elementIndex];
-    element["_stat"] = {
-      position: elementIndex * props.itemSize,
-      index: elementIndex,
-    };
-    renderedList.value.push(element);
-  }
-  for (let i = 0; i < renderAfter; i++) {
-    let elementIndex = index + itemInView.value + i;
-    const element = props.list[elementIndex];
-    element["_stat"] = {
-      position: elementIndex * props.itemSize,
-      index: elementIndex,
-    };
-    renderedList.value.push(element);
-  }
-  //   renderedList.value = [...rendered];
-  //   return rendered;
-  //   console.log(renderedList.value);
-  return `${renderAfter},${renderBefore}`;
-};
-watch(
-  position,
-  async () => {
-    await nextTick();
-    getRenderedList();
-    // renderedList.value = [];
-    // renderedList.value = [];
-    // console.log(renderedList.value);
-  },
-  { immediate: true }
-);
-onMounted(() => {
-  //   console.log(renderedList.value);
-});
+// const renderedList = ref([]);
+// watch(
+//   position,
+//   async () => {
+//     await nextTick();
+//     renderedList.value = useGetRenderedList(
+//       { ...props, itemInView },
+//       scrollerSize,
+//       position
+//     );
+//   },
+//   { immediate: true }
+// );
 </script>
 
 <style scoped>
