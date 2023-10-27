@@ -1,6 +1,8 @@
 <template>
   <div class="bg-red flex flex-center">
+    <div>{{ position }}</div>
     <f-v-scroll
+      @position="getPosition"
       :list="arr"
       v-slot="{ item, index, topIndex }"
       style="height: 450px; width: 100px"
@@ -16,8 +18,8 @@
     >
       <div class="flex" style="width: 150px">t {{ index }}</div>
     </f-v-scroll-native>
-
-    <div v-bind="containerProps" style="height: 450px; width: 500px">
+    <div>{{ y.toFixed(2) }}</div>
+    <div v-bind="containerProps" style="height: 450px; width: 500px" id="el">
       <div v-bind="wrapperProps">
         <div
           v-for="{ index, data } in list"
@@ -34,15 +36,32 @@
         </div>
       </div>
     </div>
-    <!-- <test/> -->
+    <UCard
+      :ui="{
+        background: 'bg-white dark:bg-slate-900',
+      }"
+    />
+    <HelloWorld />
   </div>
 </template>
 
 <script setup>
-// import test from "./test";
-import { useVirtualList } from "@vueuse/core";
+import { useVirtualList, useScroll } from "@vueuse/core";
+import { HelloWorld } from "aleng-library-test";
+import "aleng-library-test/dist/style.css";
+import { computed, nextTick, onMounted } from "vue";
+// import * as test from "@nuxt/ui";
+// console.log(test);
 
-// console.log(test)
+const position = ref(0);
+const getPosition = (v) => {
+  position.value = v.toFixed(2);
+};
+onMounted(async () => {
+  await nextTick();
+  el.value = document.getElementById("el");
+});
+const el = ref();
 const arr = Array.from(Array(100559).keys(), (x) => {
   return { name: x + 1 };
 });
@@ -64,6 +83,7 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(arr2, {
   itemHeight: 32,
   overscan: 40,
 });
+const { x, y, isScrolling, arrivedState, directions } = useScroll(el);
 </script>
 
 <style scoped></style>

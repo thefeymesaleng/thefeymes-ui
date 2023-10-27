@@ -4,7 +4,7 @@ import { resolve } from "path";
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
-  modules: ["nuxt-quasar-ui", "@vueuse/nuxt"],
+  modules: ["nuxt-quasar-ui", "@vueuse/nuxt",'@nuxt/ui'],
   app: {
     baseURL: process.env.NODE_ENV === "production" ? "/thefeymes-ui/" : "/",
     buildAssetsDir: "assets",

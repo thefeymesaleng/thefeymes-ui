@@ -41,8 +41,6 @@
 </template>
 
 <script setup>
-import * as test from "https://unpkg.com/thefeymes-ui@0.0.1-test-9/composables/useVScrollJs.js";
-console.log(test)
 const props = defineProps({
   list: {
     default() {
@@ -81,7 +79,9 @@ const scroll = (v) => {
     }, scrollingTransition.value);
   }
 };
+const emit = defineEmits(["position"]);
 watch(position, () => {
+  emit("position", position.value);
   if (position.value < 0) position.value = 0;
   if (Math.abs(position.value) >= scollerEnd.value) {
     position.value = scollerEnd.value;

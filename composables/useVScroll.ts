@@ -1,4 +1,4 @@
-import { WritableComputedRef } from "vue";
+import { WritableComputedRef, defineEmits } from "vue";
 
 export const useVScroll = (
   el: Ref<HTMLElement>,
@@ -53,7 +53,6 @@ export const useVScroll = (
   watch(
     position,
     async () => {
-      console.log("run");
       await nextTick();
       if (!position) return;
       renderedList.value = useGetRenderedList(props, scrollerSize, position);
